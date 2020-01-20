@@ -36,13 +36,12 @@ def loss_function(X, y, beta, p_norm = 2):
 def gradients(X, y, beta, p_norm = 2):
     y_predicted = hypothesis(X, beta)
     loss = y - y_predicted
-    L_beta = p_norm/len(y) * np.dot(loss/((loss) ** (p_norm - 1)), -X)
+    L_beta = p_norm/len(y) * np.dot(loss/((np.abs(loss)) ** (p_norm - 1)), -X)
     return L_beta
 
 def gradient_descent(X, y, num_iterations, learning_rate, p_norm = 2):
     losses = np.zeros(num_iterations)
-    X0 = np.ones(len(X))
-    X = np.concatenate((X0.reshape(-1,1), X), axis = 1)
+    X = np.column_stack([np.ones(X.shape[0]), X])
     beta = np.random.rand(X.shape[1])
     for i in range(num_iterations):
         L_beta = gradients(X, y, beta, p_norm = 2)
@@ -51,7 +50,9 @@ def gradient_descent(X, y, num_iterations, learning_rate, p_norm = 2):
         losses[i] = cost
     return losses, beta
 
-
+def predict(X, beta):
+    X = np.column_stack([np.ones(X.shape[0]), X])
+    return np.dot(X, beta)
 
 #%%
 X, y = generate_dataset_simple(100, 4, 0.25)
