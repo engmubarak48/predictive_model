@@ -6,6 +6,7 @@ Created on Sun Jan 19 10:21:09 2020
 @author: mubarak
 """
 import numpy as np
+np.seterr(all='ignore')
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
 from sklearn.base import RegressorMixin
@@ -13,14 +14,14 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.estimator_checks import check_estimator
 
 class PnormRegressor(BaseEstimator, RegressorMixin):
-    def __init__(self, num_iterations=1000, learning_rate=1e-5, p_norm = 2):
+    def __init__(self, num_iterations=1000, learning_rate=1e-5, p_norm = 2, random_state=1):
+        self.random_state = random_state
         self.num_iterations = num_iterations
         self.learning_rate = learning_rate
         self.p_norm = p_norm    
         
     def fit(self, X, y):
         X,y = check_X_y(X, y)
-#        y = y.reshape(-1,1)
         
         def hypothesis(X, beta):
             return np.dot(X, beta)
@@ -33,21 +34,21 @@ class PnormRegressor(BaseEstimator, RegressorMixin):
         def gradients(X, y, beta, p_norm = 2):
             y_predicted = hypothesis(X, beta)
             loss = y - y_predicted
-            L_beta = p_norm/len(y) * np.dot(loss/((np.abs(loss)) ** (p_norm - 1)), -X)
+            L_beta = p_norm * np.dot(((np.abs(loss)**p_norm)/loss), -X)
             return L_beta
     
         def gradient_descent(X, y, num_iterations, learning_rate, p_norm):
-            losses = np.zeros(num_iterations)
-            X = (X - X.mean(axis=0))/X.std(axis=0)
+            np.random.seed(self.random_state)
+            losses_ = np.zeros(num_iterations)
             X = np.column_stack([np.ones(X.shape[0]), X])
-            beta = np.random.rand(X.shape[1])
+            beta_ = np.random.rand(X.shape[1])
             for i in range(self.num_iterations):
-                L_beta = gradients(X, y, beta, p_norm)
-                beta = beta - learning_rate * L_beta
-                cost = loss_function(X, y, beta, p_norm)
-                losses[i] = cost
-            return losses, beta
-        self.losses, self.beta = gradient_descent(X, y, self.num_iterations, self.learning_rate, self.p_norm)
+                L_beta = gradients(X, y, beta_, p_norm)
+                beta_ = beta_ - learning_rate * L_beta
+                cost = loss_function(X, y, beta_, p_norm)
+                losses_[i] = cost
+            return losses_, beta_
+        self.losses_, self.beta_ = gradient_descent(X, y, self.num_iterations, self.learning_rate, self.p_norm)
         self.X_ = X
         self.y_ = y
         return self
@@ -66,20 +67,19 @@ class PnormRegressor(BaseEstimator, RegressorMixin):
         ss_tot = sum((Y - mean_y) ** 2)
         ss_res = sum((Y - Y_pred) ** 2)
         r2 = 1 - (ss_res / ss_tot)
-        print(r2)
+#        print(r2)
         return r2
-    def _more_tags(self):
-        return {'poor_score': True,  'stateless': True}
+#    def _more_tags(self):
+#        return {'poor_score': True}
     
     def predict(self, X):
         # Check is fit had been called
         check_is_fitted(self, ['X_', 'y_'])
         # Input validation
         X = check_array(X)
-        X = (X - X.mean(axis=0))/X.std(axis=0)
+#        X = (X - X.mean(axis=0))/X.std(axis=0)
         X = np.column_stack([np.ones(X.shape[0]), X])
-        print(X.shape)
-        predictions = np.dot(X, self.beta)
+        predictions = np.dot(X, self.beta_)
         return predictions
 
 check_estimator(PnormRegressor)
@@ -104,12 +104,18 @@ check_estimator(PnormRegressor)
 
 from sklearn.datasets import load_boston
 from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GridSearchCV
 
 X, y = load_boston(return_X_y=True)
-pipe = make_pipeline(PnormRegressor())
+tuned_params = {"p_norm" : [1,2,4]}
+
+pipe = GridSearchCV(PnormRegressor(), tuned_params)
+
+
+#pipe = make_pipeline(PnormRegressor())
 pipe.fit(X, y)  
 
-
-pred = pipe.predict(X)  
-
-pipe.score(X, Y)
+#
+#pred = pipe.predict(X)  
+#
+#pipe.score(X, y)
