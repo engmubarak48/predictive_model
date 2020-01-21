@@ -53,7 +53,7 @@ predictions = regressor.predict(X)
 ```
 The model has three hyperparameters; the learning_rate, num_iterations and p_norm. You can either initialize these parameters in PnormRegressor() initialization or simply use sklearn's GridSearch to find the best parameters among the ones you provide. 
 
-In my analysis, I realized if "p_norm" is greater than 2, it leads the loss to go infinity, which prevents the model to even learn. For now, I would highly recommend using value between [1,3).
+In my analysis, I realized if "p_norm" is greater than 2, it leads the loss to go infinity. For now, I would highly recommend using value between [1,3).
 
 For further details of how to use this repo, please read through the "HOWTOUSE.py" file
 
