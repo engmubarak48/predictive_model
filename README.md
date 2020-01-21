@@ -3,14 +3,7 @@
 This repository is an implementation of a regression predictive model. The model is sklearn compatible and it has passed sklearn estimator check.
 It can be used together with all other functionalities in sklearn like GridSearch, get_params, set_params and others. 
 
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Jan 21 09:41:33 2020
-
-@author: Jama Hussein Mohamud
-"""
-
+'''
 # How to USE
 import numpy as np
 from Estimator import PnormRegressor
@@ -30,7 +23,7 @@ def generate_dataset_simple(n, m, std):
   # Calculate `y` according to the equation discussed
   y =  np.dot(beta, x.T) + y_intercept
   return x, y
-
+'''
 
 # the below line is to show that the estimator has passed the sklearn estimator checker. 
 
