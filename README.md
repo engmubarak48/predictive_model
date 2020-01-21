@@ -48,7 +48,7 @@ regressor  = PnormRegressor()
 
 # Train on train data
 regressor.fit(X, y)
-# Predict on test data
+# Predict on train data
 predictions = regressor.predict(X) 
 ```
 The model has three hyperparameters; the learning_rate, num_iterations and p_norm. You can either initialize these parameters in PnormRegressor() initialization or simply use sklearn's GridSearch to find the best parameters among the ones you provide. 
