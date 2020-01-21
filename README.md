@@ -47,7 +47,7 @@ X = (X - X.mean(axis=0))/X.std(axis=0)
 regressor  = PnormRegressor()
 
 # Train on train data
-estimator = regressor.fit(X, y)
+regressor.fit(X, y)
 # Predict on test data
 predictions = regressor.predict(X) 
 ```
