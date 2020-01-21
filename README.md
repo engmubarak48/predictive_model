@@ -57,5 +57,5 @@ In my analysis, I realized if "p_norm" is greater than 2, it leads the loss to g
 
 For further details of how to use this repo, please read through the "HOWTOUSE.py" file
 
-If you have any further questions, please ask in the issues section. 
+If you have any further questions, please don't hesitate to ask. 
 
