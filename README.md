@@ -15,7 +15,7 @@ After cloning, go to the directory of the repo in your computer. From the termin
 ```
 python HOWTOUSE.py
 ```
-If everything worked correctly you should get an output close to one below. Though it might little bit vary depending on Initialization. 
+If everything worked correctly you should get an output close to one below. Though it might little bit vary depending on Initialization and version. 
 
 ```
  this code was tested in sklearn version '0.21.2' & your sk.version is '0.21.2'
