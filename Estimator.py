@@ -3,7 +3,7 @@
 """
 Created on Sun Jan 19 10:21:09 2020
 
-@author: mubarak
+@author: Jama Hussein Mohamud
 """
 import numpy as np
 np.seterr(all='ignore')
@@ -62,7 +62,6 @@ class PnormRegressor(BaseEstimator, RegressorMixin):
         predictions = np.dot(X, self.beta_)
         return predictions
 
-#check_estimator(PnormRegressor)
 
 
 
