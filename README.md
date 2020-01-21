@@ -30,7 +30,7 @@ Best parameters chose by GridSearch:  {'num_iterations': 1000, 'p_norm': 2}
 Train set R2_score for BOSTON data fetched from openML:  0.7353366403676359
 
 ```
-If you get the above output, then you can easily use the package just like any sklearn package. Since, this is a regression model it can only be used for regression data (i.e. univariate & Multivariate regression data).
+If you get the above output, then you can easily use the package just like any sklearn package. Since, this is a regression model it can only be used on regression data (i.e. univariate & Multivariate regression data).
 
 Use the below script to use the model. 
 
