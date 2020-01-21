@@ -3,69 +3,74 @@
 This repository is an implementation of a regression predictive model. The model is sklearn compatible and it has passed sklearn estimator check.
 It can be used together with all other functionalities in sklearn like GridSearch, get_params, set_params and others. 
 
- 
-\documentclass{article}
-\usepackage[utf8]{inputenc}
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Jan 21 09:41:33 2020
 
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\title{predictive model project}
-\usepackage[margin=1in,footskip=0.25in]{geometry}
+@author: Jama Hussein Mohamud
+"""
 
-\begin{document}
-
-\maketitle
-
-\section{Introduction}
-
-
-
-In this predictive model, gradient descent is used as optimization. The gradient descent minimizes the sum of residuals  $R(\alpha,\beta):=\sum_{i=1}^N L(f(x_i|\alpha, \beta),y_i)$.
-
-\subsection{Derivative of Loss function with respect to parameters}
-Assuming we have train samples $(x_1,y_1),…,(x_N,y_N)$ and loss function 
-$L(y,y’):= |y-y’|^a$,  where $\hat{y} = f(x| \alpha, \beta)$.
-And $f(x| \alpha, \beta) = \beta X + \alpha$,  Then the prediction of $\hat{y}$ can be written as $$ \hat{y} = \alpha+ \beta_1x_1 + \beta_2x_2 + \cdots + \beta_nx_n $$
-
-
-letting $\alpha =  \beta_0 x_0$, then we can rewrite $\hat{y}$ as below 
-
-\begin{align}\label{eq1}
- \hat{y} &= \beta_0 x_0 + \beta_1x_1 + \beta_2x_2 + \cdots + \beta_nx_n \\
-	&   ~~~~x_0 =  1 \nonumber	
-\end{align}.
-
-equation (\ref{eq1}) can be written in matrix form as
-\begin{align}\label{eq_2}
-\hat{y} = \beta ^T X
-\end{align}
+# How to USE
+import numpy as np
+from Estimator import PnormRegressor
+from sklearn.utils.estimator_checks import check_estimator
+from sklearn.datasets import load_boston
+from sklearn.pipeline import make_pipeline
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import r2_score
+# function to generate your data
+def generate_dataset_simple(n, m, std):
+  # Generate x as an array of `n` samples which can take a value between 0 and 100
+  x = np.random.rand(n, m) * 100
+  # Generate the random error of n samples, with a random value from a normal distribution, with a standard
+  # deviation provided in the function argument
+  y_intercept = np.random.randn(n) * std
+  beta = np.random.rand(m)
+  # Calculate `y` according to the equation discussed
+  y =  np.dot(beta, x.T) + y_intercept
+  return x, y
 
 
+# the below line is to show that the estimator has passed the sklearn estimator checker. 
 
-\begin{align}\label{eq3_error}
-L(y,\beta^T X):= |y-\beta ^T X|^a
-\end{align}
+print("the estimator has passed all the checks" if check_estimator(PnormRegressor) else 
+      "the estimator has not passed all the checks")
 
-We need to minimize the error in equation (\ref{eq3_error}) w.r.t $\beta$.
+# generate X, y randomly from the above function 
+X, y = generate_dataset_simple(100, 4, 0.25)
+# Please normalize the data
+X = (X - X.mean(axis=0))/X.std(axis=0)
 
-\begin{align}\label{eq_deri}
-\frac{\partial L(y,\beta^T X) }{\partial \beta} &= a |y-\beta ^T X|^{a-1} ~\frac{\partial |y-\beta ^T X|}{\partial\beta}
-\end{align}
+num_iterations, learning_rate , p_norm = 100, 1e-5, 2
+regressor  = PnormRegressor()
+estimator = regressor.fit(X, y)
+pred = regressor.predict(X) 
 
-we know that given $y = |x|$,~ $\frac{d y }{d x}=  \ \frac{x}{|x|}$ then equation (\ref{eq_deri}) becomes
+print('Train R2_score for randomly generated data', r2_score(y, pred))
 
+# We can also use Datasets availlable in sklearn like BOSTON dataset for housing price prediction
 
-\begin{align}\label{eq_derivative}
-\frac{\partial L(y,\beta^T X) }{\partial \beta} &= a |y-\beta ^T X|^{a-1} ~\frac{\partial (|y-\beta ^T X|)}{\partial\beta}\\\nonumber
-&= a |y-\beta ^T X|^{a-1} ~ . \frac{(y-\beta ^T X)}{|y-\beta ^T X|} (-X)\\\nonumber
-&= -aX \frac{|y-\beta ^T X|^{a} }{(y-\beta ^T X)^2}(y-\beta ^T X) 
-\text { ----- This simplifies to }\\\nonumber
-& = -aX\frac{|y-\beta ^T X|^{a}}{(y-\beta ^T X)} 
-\end{align}
+X, y = load_boston(return_X_y=True)
 
+# Please normalize the data
+X = (X - X.mean(axis=0))/X.std(axis=0)
 
-when $a> 2$ and $y-\beta^T X $ is large, the derivative of the cost function goes to infinity, which means there is no learning. So, from my analysis, I highly recommend using a value of $a$ between [1,3)
-\end{document}
+regressor.fit(X, y)  
+
+pred = regressor.predict(X)
+print('Train set R2_score for BOSTON data', r2_score(y, pred))
+
+# We can also use other sklearn packages like GridSearch to search best parameters
+
+tuned_params = {"num_iterations": [100,1000], "p_norm" : [1,2]}
+
+pipe = GridSearchCV(PnormRegressor(), tuned_params)
+pipe.fit(X,y)
+
+pred = pipe.predict(X) 
+print('Train set R2_score for BOSTON data with gridsearch', r2_score(y, pred))
+
+print("Best parameters chose by GridSearch", pipe.best_params_)
+
 
