@@ -15,7 +15,7 @@ After cloning, go to the directory of the repo in your computer. From the termin
 ```
 python HOWTOUSE.py
 ```
-If everything worked correctly you should get an output close to one below. Though it might little bit vary depending on Initialization. 
+If everything worked correctly you should get an output close to one below. Though it might little bit vary depending on Initialization and version. 
 
 ```
  this code was tested in sklearn version '0.21.2' & your sk.version is '0.21.2'
@@ -30,7 +30,7 @@ Best parameters chose by GridSearch:  {'num_iterations': 1000, 'p_norm': 2}
 Train set R2_score for BOSTON data fetched from openML:  0.7353366403676359
 
 ```
-If you get the above output, then you can easily use the package just like any sklearn package. Since, this is a regression model it can only be used for regression data (i.e. univariate & Multivariate regression data).
+If you get the above output, then you can easily use the package just like any sklearn package. Since, this is a regression model it can only be used on regression data (i.e. univariate & Multivariate regression data).
 
 Use the below script to use the model. 
 
@@ -47,15 +47,15 @@ X = (X - X.mean(axis=0))/X.std(axis=0)
 regressor  = PnormRegressor()
 
 # Train on train data
-estimator = regressor.fit(X, y)
-# Predict on test data
+regressor.fit(X, y)
+# Predict on train data
 predictions = regressor.predict(X) 
 ```
 The model has three hyperparameters; the learning_rate, num_iterations and p_norm. You can either initialize these parameters in PnormRegressor() initialization or simply use sklearn's GridSearch to find the best parameters among the ones you provide. 
 
-In my analysis, I realized if "p_norm" is greater than 2, it leads the loss to go infinity, which prevents the model to even learn. For now, I would highly recommend using value between [1,3).
+In my analysis, I realized if "p_norm" is greater than 2, it leads the loss to go infinity. For now, I would highly recommend using value between [1,3).
 
 For further details of how to use this repo, please read through the "HOWTOUSE.py" file
 
-If you have any further questions, please ask in the issues section. 
+If you have any further questions, please don't hesitate to ask. 
 
