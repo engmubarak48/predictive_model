@@ -14,10 +14,7 @@ from sklearn.utils.estimator_checks import check_estimator
 from sklearn.datasets import load_boston, fetch_openml
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV
-import warnings
-warnings.filterwarnings("ignore", category=FutureWarning)
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=UserWarning)
+
 
 print(" this code was tested in sklearn version '0.21.2' & your sk.version is '{}'".format(sklearn.__version__))
 # function to generate your data
@@ -54,7 +51,7 @@ X = (X - X.mean(axis=0))/X.std(axis=0)
 #num_iterations, learning_rate , p_norm = 100, 1e-5, 2
 
 regressor  = PnormRegressor()
-estimator = regressor.fit(X, y)
+regressor.fit(X, y)
 pred = regressor.predict(X) 
 
 print('Train R2_score for randomly generated data: ', r2_score(y, pred))

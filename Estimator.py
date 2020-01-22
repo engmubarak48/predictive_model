@@ -12,6 +12,10 @@ from sklearn.base import TransformerMixin
 from sklearn.base import RegressorMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.estimator_checks import check_estimator
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 class PnormRegressor(BaseEstimator, RegressorMixin):
     def __init__(self, num_iterations=1000, learning_rate=1e-5, p_norm = 2, random_state=1):
