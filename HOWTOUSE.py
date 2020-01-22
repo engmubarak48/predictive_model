@@ -14,7 +14,6 @@ from sklearn.utils.estimator_checks import check_estimator
 from sklearn.datasets import load_boston, fetch_openml
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import GridSearchCV
-from sklearn.metrics import r2_score
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -32,6 +31,14 @@ def generate_dataset_simple(n, m, std):
   # Calculate `y` according to the equation discussed
   y =  np.dot(beta, x.T) + y_intercept
   return x, y
+
+# Function to evaluate the model
+def r2_score(y_true, y_pred):
+    mean_y = np.mean(y_true)
+    ss_tot = sum((y_true - mean_y) ** 2)
+    ss_res = sum((y_true - y_pred) ** 2)
+    r2 = 1 - (ss_res / ss_tot)
+    return r2
 
 
 # the below line is to show that the estimator has passed the sklearn estimator checker. 
@@ -91,3 +98,28 @@ regressor.fit(X, y)
 
 pred = regressor.predict(X)
 print('Train set R2_score for BOSTON data fetched from openML: ', r2_score(y, pred))
+
+#######################################################################################
+print('----- MODEL EVALUATION on  Employee Selection (ESL) dataset fetched from openML DB')
+
+# Fetch Employee Selection dataset from openML
+X,y = fetch_openml(name='ESL', return_X_y=True)
+
+# Normalizing the data
+X = (X - X.mean(axis=0))/X.std(axis=0)
+
+# split data into train and validation
+train_split_perc = 0.8
+trainset = round(train_split_perc * len(X))
+X_train, X_test, y_train, y_test = X[:trainset], X[trainset:], y[:trainset], y[trainset:]
+
+model = PnormRegressor()
+
+model.fit(X_train, y_train)
+
+y_pred_train = model.predict(X_train)
+y_pred_test = model.predict(X_test)
+
+print("R2_score for ESL train data: {}".format(r2_score(y_train, y_pred_train)))
+print("R2_score for ESL test data: {}".format(r2_score(y_test, y_pred_test)))
+
